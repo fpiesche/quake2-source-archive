@@ -1,0 +1,72 @@
+---
+name: Build mods
+
+on:
+  workflow_dispatch:
+    inputs:
+      mods:
+        type: string
+        description: mod names to build
+  push:
+    paths:
+      - "sources/*"
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  builds:
+    name: Assemble build matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.builds.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+      - name: Get changed files
+        if: ${{ github.event_name }} == "push"
+        id: changed_files_action
+        uses: tj-actions/changed-files@v45
+        with:
+          files: sources/*
+      - name: Assemble build matrix
+        id: builds
+        run: |
+          # Figure out which manifests need building
+          if [[ "${{ github.event_name }}" == "push" || "${{ github.event_name }}" == "pull_request" ]]; then
+            export MODS="${{ steps.changed_files_action.outputs.all_changed_files }}"
+          elif [[ "${{ inputs.mods }}" != "" ]]; then
+            export MODS="${{ inputs.mods }}"
+          fi
+          export MATRIX=$(python3 generate_build_matrix.py)
+          echo "MATRIX=$MATRIX" >> $GITHUB_OUTPUT
+          echo $MATRIX | jq
+
+  build-mod:
+    name: ${{ matrix.target.name }} ${{ matrix.target.platform_name }}
+    needs: builds
+    strategy:
+      matrix:
+        target: ${{fromJson(needs.builds.outputs.matrix)}}
+      fail-fast: false
+    runs-on: ${{ matrix.target.runner }}
+    container: ghcr.io/flathub/flatpak-builder-lint:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          ref: ${{ github.ref }}
+      - name: Build ${{ matrix.target.name }} ${{ matrix.target.platform_name }}
+        uses: threeal/cmake-action@v2.1.0
+        with:
+          source-dir: source
+          build-dir: build
+      - name: Store artifacts
+        uses: actions/upload-artifacts@v4
+        with:
+          name: ${{ matrix.target.name }}-${{ matrix.target.platform_name }}.zip
+          path: build/bin/${{ matrix.target.name }}
