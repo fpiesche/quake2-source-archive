@@ -68,7 +68,7 @@ jobs:
           c-compiler: clang
           build-dir: build
       - name: Store artifacts
-        uses: actions/upload-artifacts@v4
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.name }}-${{ matrix.target.platform_name }}.zip
           path: build/bin/${{ matrix.target.name }}
