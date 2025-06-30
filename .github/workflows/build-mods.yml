@@ -63,7 +63,6 @@ jobs:
       - name: Build ${{ matrix.target.name }} ${{ matrix.target.platform_name }}
         uses: threeal/cmake-action@v2.1.0
         with:
-          source-dir: source
           build-dir: build
       - name: Store artifacts
         uses: actions/upload-artifacts@v4
