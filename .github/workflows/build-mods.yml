@@ -53,7 +53,6 @@ jobs:
         target: ${{fromJson(needs.builds.outputs.matrix)}}
       fail-fast: false
     runs-on: ${{ matrix.target.runner }}
-    container: ghcr.io/flathub/flatpak-builder-lint:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
