@@ -41,7 +41,7 @@ foreach(item ${MODS})
         message("-- Adding mod: ${mod}")
         add_library(${mod} SHARED ${MOD_SRC})
         set_target_properties(${mod} PROPERTIES PREFIX "")
-        set_target_properties(${mod} PROPERTIES OUTPUT_NAME "bin/${mod}/${OS_HANDLE}/game${Q2_BUILD_ARCH}")
+        set_target_properties(${mod} PROPERTIES OUTPUT_NAME "${CMAKE_BINARY_DIR}/${mod}/${OS_HANDLE}/game${Q2_BUILD_ARCH}")
 
         # Handle 32bit builds
         if (Q2_BUILD_ARCH STREQUAL "x86")
