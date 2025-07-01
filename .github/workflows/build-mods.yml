@@ -16,10 +16,9 @@ on:
 
 jobs:
   builds:
-    name: Assemble build matrix
+    name: Get mods to build
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.builds.outputs.matrix }}
       mods: ${{ steps.builds.outputs.mods }}
     steps:
       - name: Checkout
@@ -33,7 +32,7 @@ jobs:
         uses: tj-actions/changed-files@v45
         with:
           files: sources/*
-      - name: Assemble build matrix
+      - name: Get list of mods to build
         id: builds
         run: |
           # Figure out which manifests need building
@@ -42,25 +41,23 @@ jobs:
           elif [[ "${{ inputs.mods }}" != "" ]]; then
             export MODS="${{ inputs.mods }}"
           fi
-          echo "::group::Matrix"
-          export MATRIX=$(python3 generate_build_matrix.py)
-          echo "MATRIX=$MATRIX" >> $GITHUB_OUTPUT
-          echo $MATRIX | jq
-          echo "::endgroup::"
           echo "::group::Mods"
-          export MODS=$(echo $MATRIX | jq '.[].name' | uniq | jq -crn '[ { "name": inputs } ]')
-          echo "MODS=$MODS" >> $GITHUB_OUTPUT
+          echo "MODS=$(python3 get_mod_list.py)" >> $GITHUB_OUTPUT
           echo $MODS | jq
           echo "::endgroup::"
 
-  build-mod:
-      uses: ./.github/workflows/build-mod.yml
-      with:
-        name: ${{ matrix.target.name }}
-        runner: ${{ matrix.target.runner }}
+  build-mod: 
+      needs: builds
+      strategy:
+        matrix:
+          target: ${{ fromJson(needs.builds.outputs.mods) }}
+      jobs:
+        uses: ./.github/workflows/build-mod.yml
+        with:
+          target_name: ${{ matrix.target }}
 
   merge-artifacts:
-    name: Merge artifacts for ${{ matrix.target.name }}
+    name: Merge artifacts for ${{ matrix.target }}
     if: always()
     needs: [builds, build-mod]
     strategy:
@@ -73,5 +70,5 @@ jobs:
         uses: actions/upload-artifact/merge@v4
         with:
           name: ${{ matrix.target.name }}.zip
-          delete-merged: true
           pattern: ${{ matrix.target.name }}-*
+          delete-merged: true

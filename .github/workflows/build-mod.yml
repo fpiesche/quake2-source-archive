@@ -1,12 +1,11 @@
 ---
-name: Build ${{ inputs.name }}
+name: Build ${{ inputs.target_name }}
 
 on:
   workflow_call:
     inputs:
-      name:
-      platform_name:
-      runner:
+      target_name:
+        required: true
 
 env:
   LIBCLANG_RT_BUILTINS_WASM32_A_URL: http://cdn.jsdelivr.net/gh/jedisct1/libclang_rt.builtins-wasm32.a/precompiled/llvm-19/libclang_rt.builtins-wasm32.a
@@ -14,7 +13,34 @@ env:
 
 jobs:
   build:
-    runs-on: ${{ inputs.runner }}
+    strategy:
+      matrix:
+        target:
+          - runner: ubuntu-latest
+            platform: wasm
+            arch: wasm
+          - runner: macos-latest
+            platform: macos
+            arch: aarch64
+          - runner: macos-13
+            platform: macos
+            arch: x86_64
+          - runner: ubuntu-latest
+            platform: linux
+            arch: x86
+          - runner: ubuntu-latest
+            platform: linux
+            arch: x86_64
+          - runner: ubuntu-24.04-arm
+            platform: linux
+            arch: aarch64
+          - runner: windows-latest
+            platform: windows
+            arch: x86
+          - runner: windows-latest
+            platform: windows
+            arch: x86_64
+    runs-on: ${{ matrix.target.runner }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,20 +48,9 @@ jobs:
           submodules: true
           ref: ${{ github.ref }}
 
-      # Native build
-      - name: Build ${{ inputs.name }} ${{ inputs.platform_name }}
-        if: inputs.platform_name != 'wasm'
-        uses: threeal/cmake-action@v2.1.0
-        with:
-          generator: Ninja
-          cxx-compiler: clang++
-          c-compiler: clang
-          build-dir: build
-          build-args: --target ${{ inputs.name }}
-
       # WASM build
       - name: Install WASI SDK
-        if: inputs.platform_name == 'wasm'
+        if: matrix.target.arch == 'wasm'
         run: |
           curl -LO ${{ env.WASI_SDK_URL }} && \
           sudo dpkg -i wasi-sdk-*-x86_64-linux.deb && \
@@ -43,17 +58,28 @@ jobs:
           sudo curl -L ${{ env.LIBCLANG_RT_BUILTINS_WASM32_A_URL }} \
             --output /opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi/libclang_rt.builtins-wasm32.a && \
           ln -s /opt/wasi-sdk/share/wasi-sysroot wasm/wasi-sysroot
-      - name: Build ${{ inputs.name }} wasm
-        if: inputs.platform_name == 'wasm'
+      - name: Build ${{ inputs.target_name }} wasm
+        if: matrix.target.arch == 'wasm'
         run: |
-          mkdir -p build/bin/${{ inputs.name }} && \
+          mkdir -p build/bin/${{ inputs.target_name }} && \
           export PATH=$PATH:/opt/wasi-sdk/bin/ && \
           cd wasm && \
-          python3 compile_mod.py ${{ inputs.name }} && \
-          mv ../bin/${{ inputs.name }}/game.wasm ../build/bin/${{ inputs.name }}/
+          python3 compile_mod.py ${{ inputs.target_name }} && \
+          mv ../bin/${{ inputs.target_name }}/game.wasm ../build/bin/${{ inputs.target_name }}/
+
+      # Native build
+      - name: Build ${{ inputs.target_name }} ${{ matrix.target.platform }} ${{ matrix.target.arch }}
+        if: matrix.target.arch != 'wasm'
+        uses: threeal/cmake-action@v2.1.0
+        with:
+          generator: Ninja
+          cxx-compiler: clang++
+          c-compiler: clang
+          build-dir: build
+          build-args: --target ${{ inputs.target_name }}
 
       - name: Store builds
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.name }}-${{ inputs.platform_name }}.zip
-          path: build/bin/${{ inputs.name }}
+          name: ${{ inputs.target_name }}-${{ matrix.target.platform }}-${{ matrix.target.arch }}.zip
+          path: build/bin/${{ inputs.target_name }}
