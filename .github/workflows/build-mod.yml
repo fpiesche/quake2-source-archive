@@ -70,7 +70,7 @@ jobs:
         run: |
           export PATH=$PATH:/opt/wasi-sdk/bin/ && \
           cd wasm && \
-          python3 compile_mod.py ${{ inputs.target_name }} && \
+          python3 compile_mod.py ${{ inputs.target_name }}
 
       # Native build
       - name: Set cmake generator
