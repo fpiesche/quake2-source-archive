@@ -113,8 +113,8 @@ jobs:
           if [[ "${{ matrix.target.platform }}" == "windows" ]]; then
             mv build/Debug/* $ARTIFACT_PATH/${{ matrix.target.platform }}/
           elif [[ "${{ matrix.target.platform }}" == "wasm" ]]; then
-            find . -type d -name "obj" -exec rm -rf {} \;
             find . -type f -name "game.wasm" -exec mv '{}' $ARTIFACT_PATH/${{ matrix.target.platform }}/ \;
+            rm -rf bin/ctc/obj
           fi
 
           echo ARTIFACT_PATH=$ARTIFACT_PATH >> $GITHUB_ENV
