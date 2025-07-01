@@ -99,10 +99,19 @@ jobs:
           options: |
             Q2_BUILD_ARCH=${{ matrix.target.arch }}
 
-      - run: find ${{ steps.build.outputs.build-dir }} -name game${{ matrix.target.arch }}.*
+      - name: Find build output path
+        shell: bash
+        run: |
+          if [[ -z ${{ steps.build.outputs.build-dir }} ]]; then
+            export ARTIFACT_PATH=$(pwd)/build/bin/${{ inputs.target_name }}
+          else
+            export ARTIFACT_PATH=${{ steps.build.outputs.build-dir }}/build/bin/${{ inputs.target_name }}
+          fi
+          echo ARTIFACT_PATH=$ARTIFACT_PATH >> $GITHUB_ENV
+          echo $ARTIFACT_PATH
 
       - name: Store builds
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.target_name }}-${{ matrix.target.platform }}-${{ matrix.target.arch }}
-          path: ${{ steps.build.outputs.build-dir }}/bin/${{ inputs.target_name }}
+          path: ${{ env.ARTIFACT_PATH }}
