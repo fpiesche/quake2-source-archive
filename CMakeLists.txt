@@ -2,11 +2,6 @@ cmake_minimum_required(VERSION 3.10)
 project(q2mods)
 
 option(Q2_BUILD_ARCH "Target architecture to build (default: host architecture)" ${CMAKE_SYSTEM_PROCESSOR})
-if (Q2_BUILD_ARCH STREQUAL "x86")
-  set(CMAKE_C_FLAGS -m32)
-  set(CMAKE_CXX_FLAGS -m32)
-  include_directories(/usr/i686-linux-gnu/include/)
-endif()
 
 string(TOLOWER ${CMAKE_SYSTEM_NAME} OS_HANDLE)
 
@@ -32,6 +27,16 @@ foreach(item ${MODS})
         add_library(${mod} SHARED ${MOD_SRC})
         set_target_properties(${mod} PROPERTIES PREFIX "")
         set_target_properties(${mod} PROPERTIES OUTPUT_NAME "bin/${mod}/${OS_HANDLE}/game${Q2_BUILD_ARCH}")
+
+        if (Q2_BUILD_ARCH STREQUAL "x86")
+          if(LINUX)
+            set(CMAKE_C_FLAGS -m32)
+            set(CMAKE_CXX_FLAGS -m32)
+            target_include_directories(${mod} /usr/i686-linux-gnu/include/)
+            target_link_directories(${mod} /usr/i686-linux-gnu)
+          endif()
+        endif()
+
       endif()
     endif()
   endif()
