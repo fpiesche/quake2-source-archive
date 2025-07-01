@@ -46,11 +46,16 @@ jobs:
           elif [[ "${{ inputs.mods }}" != "" ]]; then
             export MODS="${{ inputs.mods }}"
           fi
+          echo "::group::Matrix"
           export MATRIX=$(python3 generate_build_matrix.py)
-          export MODS=$(echo $MATRIX | jq '.[].name' | uniq | jq -n "[ inputs ]")
           echo "MATRIX=$MATRIX" >> $GITHUB_OUTPUT
-          echo "MODS=$MODS" >> $GITHUB_OUTPUT
           echo $MATRIX | jq
+          echo "::endgroup::"
+          echo "::group::Mods"
+          export MODS=$(echo $MATRIX | jq '.[].name' | uniq | jq -n '[ inputs ]')
+          echo "MODS=$MODS" >> $GITHUB_OUTPUT
+          echo $MODS | jq
+          echo "::endgroup::"
 
   build-mod:
     name: ${{ matrix.target.name }} ${{ matrix.target.platform_name }}
