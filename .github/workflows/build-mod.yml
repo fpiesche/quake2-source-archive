@@ -75,6 +75,14 @@ jobs:
           mv ../bin/${{ inputs.target_name }}/game.wasm ../build/bin/${{ inputs.target_name }}/wasm/
 
       # Native build
+      - name: Set cmake generator
+        shell: bash
+        run: |
+          if [[ ${{ runner.os }} == "Windows" ]]; then
+            export CMAKE_GENERATOR="Makefile" >> $GITHUB_ENV
+          else
+            export CMAKE_GENERATOR="Ninja" >> $GITHUB_ENV
+          fi
       - name: Install 32bit cross-compilation libs
         if: matrix.target.arch == 'x86' && matrix.target.platform == 'linux'
         run: sudo apt-get update && sudo apt-get install -y libc6-dev-i386-cross
@@ -82,7 +90,7 @@ jobs:
         if: matrix.target.arch != 'wasm'
         uses: threeal/cmake-action@v2.1.0
         with:
-          generator: Ninja
+          generator: ${{ env.CMAKE_GENERATOR }}
           cxx-compiler: clang++
           c-compiler: clang
           build-dir: build
