@@ -113,7 +113,7 @@ jobs:
           if [[ "${{ matrix.target.platform }}" == "windows" ]]; then
             mv build/Debug/* $ARTIFACT_PATH/${{ matrix.target.platform }}/
           elif [[ "${{ matrix.target.platform }}" == "wasm" ]]; then
-            find . -type d -name "obj" -delete
+            find . -type d -name "obj" -exec rm -rf {} \;
             find . -type f -name "game.wasm" -exec mv '{}' $ARTIFACT_PATH/${{ matrix.target.platform }}/ \;
           fi
 
