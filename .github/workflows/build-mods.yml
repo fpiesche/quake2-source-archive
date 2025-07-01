@@ -19,7 +19,7 @@ jobs:
     name: Get mods to build
     runs-on: ubuntu-latest
     outputs:
-      mods: ${{ steps.builds.outputs.mods }}
+      mods: ${{ steps.builds.outputs.modlist }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,8 +42,8 @@ jobs:
             export MODS="${{ inputs.mods }}"
           fi
           echo "::group::Mods"
-          echo "MODS=$(python3 get_mod_list.py)" >> $GITHUB_OUTPUT
-          echo $MODS | jq
+          echo "MODLIST=$(python3 get_mod_list.py)" >> $GITHUB_OUTPUT
+          echo $MODLIST | jq
           echo "::endgroup::"
 
   build-mod: 
