@@ -87,6 +87,7 @@ jobs:
         if: matrix.target.arch == 'x86' && matrix.target.platform == 'linux'
         run: sudo apt-get update && sudo apt-get install -y libc6-dev-i386-cross
       - name: Build ${{ inputs.target_name }} ${{ matrix.target.platform }} ${{ matrix.target.arch }}
+        id: build
         if: matrix.target.arch != 'wasm'
         uses: threeal/cmake-action@v2.1.0
         with:
@@ -101,5 +102,5 @@ jobs:
       - name: Store builds
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.target_name }}-${{ matrix.target.platform }}-${{ matrix.target.arch }}.zip
-          path: build/bin/${{ inputs.target_name }}
+          name: ${{ inputs.target_name }}-${{ matrix.target.platform }}-${{ matrix.target.arch }}
+          path: ${{ steps.build.outputs.build-dir }}/bin/${{ inputs.target_name }}
