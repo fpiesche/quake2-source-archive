@@ -52,7 +52,7 @@ jobs:
           echo $MATRIX | jq
           echo "::endgroup::"
           echo "::group::Mods"
-          export MODS=$(echo $MATRIX | jq '.[].name' | uniq | jq -n '[ { "name": inputs } ]')
+          export MODS=$(echo $MATRIX | jq '.[].name' | uniq | jq -crn '[ { "name": inputs } ]')
           echo "MODS=$MODS" >> $GITHUB_OUTPUT
           echo $MODS | jq
           echo "::endgroup::"
