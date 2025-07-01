@@ -25,6 +25,12 @@ foreach(item ${MODS})
       file(GLOB MOD_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/sources/${mod}/*.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/sources/${mod}/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/sources/${mod}/*.C"
+        "${CMAKE_CURRENT_SOURCE_DIR}/sources/${mod}/*.H"
+        "${CMAKE_CURRENT_SOURCE_DIR}/sources/${mod}/src/*.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/sources/${mod}/src/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/sources/${mod}/src/*.C"
+        "${CMAKE_CURRENT_SOURCE_DIR}/sources/${mod}/src/*.H"
       )
 
       # Warn on mods that don't find source files with the above setup
