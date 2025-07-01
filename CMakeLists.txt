@@ -39,15 +39,15 @@ foreach(item ${MODS})
       endif()
     endif()
 
-    # Handle 32bit builds
-    if (Q2_BUILD_ARCH STREQUAL "x86")
-      if(LINUX)
-        set(CMAKE_C_FLAGS -m32)
-        set(CMAKE_CXX_FLAGS -m32)
-        target_include_directories(${mod} PRIVATE /usr/i686-linux-gnu/include/)
-        target_link_directories(${mod} PRIVATE /usr/i686-linux-gnu)
-      endif()
-    endif()
-
   endif()
 endforeach()
+
+# Handle 32bit builds
+if (Q2_BUILD_ARCH STREQUAL "x86")
+  if(LINUX)
+    set(CMAKE_C_FLAGS -m32)
+    set(CMAKE_CXX_FLAGS -m32)
+    include_directories(/usr/i686-linux-gnu/include/)
+    link_directories(/usr/i686-linux-gnu)
+  endif()
+endif()
