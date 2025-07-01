@@ -27,10 +27,10 @@ jobs:
             platform: wasm
             arch: wasm
           - runner: macos-latest
-            platform: macos
+            platform: darwin
             arch: aarch64
           - runner: macos-13
-            platform: macos
+            platform: darwin
             arch: x86_64
           - runner: ubuntu-latest
             platform: linux
