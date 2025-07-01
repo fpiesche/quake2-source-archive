@@ -27,5 +27,5 @@ if __name__ == "__main__":
     mods_to_build = [get_mod_name(item) for item in re.split(r'[;:,\s]+', os.environ.get("MODS", ""))]
     if not mods_to_build or mods_to_build == [""]:
         mod_dir = Path("sources")
-        mods_to_build = list(set([item.name for item in mod_dir.iterdir() if item.is_dir()]))
-    print(json.dumps(mods_to_build))
+        mods_to_build  = [item.name for item in mod_dir.iterdir() if item.is_dir()]
+    print(json.dumps(list(set(mods_to_build))))
