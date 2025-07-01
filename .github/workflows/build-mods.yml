@@ -66,9 +66,24 @@ jobs:
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
+      - name: Get short git sha
+        run: |
+          export github_sha_hash=${{ github.sha }}
+          export github_sha_short="${github_sha_hash:0:7}"
+          echo "COMMIT_SHORT=$github_sha_short}" >> $GITHUB_ENV
       - name: Merge artifacts
         uses: actions/upload-artifact/merge@v4
         with:
-          name: ${{ matrix.target }}.zip
+          name: ${{ matrix.target }}-${{ env.COMMIT_SHORT }}.zip
           pattern: ${{ matrix.target }}-*
           delete-merged: true
+      - name: Create release
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.target }}-${{ env.COMMIT_SHORT }}.zip
+          name: ${{ matrix.target }} ${{ env.COMMIT_SHORT }}
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          make_latest: true
+          append_body: true
