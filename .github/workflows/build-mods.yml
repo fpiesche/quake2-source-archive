@@ -14,12 +14,17 @@ on:
       - main
   pull_request:
 
+env:
+  LIBCLANG_RT_BUILTINS_WASM32_A_URL: http://cdn.jsdelivr.net/gh/jedisct1/libclang_rt.builtins-wasm32.a/precompiled/llvm-19/libclang_rt.builtins-wasm32.a
+  WASI_SDK_URL: https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-25/wasi-sdk-25.0-x86_64-linux.deb
+
 jobs:
   builds:
     name: Assemble build matrix
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.builds.outputs.matrix }}
+      mods: ${{ steps.builds.outputs.mods }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,7 +47,9 @@ jobs:
             export MODS="${{ inputs.mods }}"
           fi
           export MATRIX=$(python3 generate_build_matrix.py)
+          export MODS=$(echo $MATRIX | jq '.[].name' | uniq | jq -n "[ inputs ]")
           echo "MATRIX=$MATRIX" >> $GITHUB_OUTPUT
+          echo "MODS=$MODS" >> $GITHUB_OUTPUT
           echo $MATRIX | jq
 
   build-mod:
@@ -59,15 +66,54 @@ jobs:
         with:
           submodules: true
           ref: ${{ github.ref }}
+
+      # Native build
       - name: Build ${{ matrix.target.name }} ${{ matrix.target.platform_name }}
+        if: matrix.target.platform_name != "wasm"
         uses: threeal/cmake-action@v2.1.0
         with:
           generator: Ninja
           cxx-compiler: clang++
           c-compiler: clang
           build-dir: build
-      - name: Store artifacts
+          build-args: --target ${{ matrix.target.name }}
+
+      # WASM build
+      - name: Install WASI SDK
+        if: matrix.target.platform_name == "wasm"
+        run: |
+          curl -LO ${{ env.WASI_SDK_URL }} && \
+          dpkg -i wasi-sdk-*-x86_64-linux.deb && \
+          rm *.deb && \
+          curl -L ${{ env.LIBCLANG_RT_BUILTINS_WASM32_A_URL }} \
+            --output /opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi/libclang_rt.builtins-wasm32.a && \
+          ln -s /opt/wasi-sdk/share/wasi-sysroot wasm/wasi-sysroot
+      - name: Build ${{ matrix.target.name }} wasm
+        if: matrix.target.platform_name == "wasm"
+        run: |
+          export PATH=$PATH:/opt/wasi-sdk/bin/ && \
+          cd wasm && \
+          python3 compile_mod.py ${{ matrix.target.name }} && \
+          mv ../bin/${{ matrix.target.name }}/game.wasm ../build/bin/${{ matrix.target.name }}/
+
+      - name: Store builds
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.name }}-${{ matrix.target.platform_name }}.zip
           path: build/bin/${{ matrix.target.name }}
+
+  merge-artifacts:
+    name: Merge artifacts for ${{ matrix.target }}
+    needs: build-mod
+    strategy:
+      matrix:
+        target: ${{ fromJson(needs.builds.outputs.mods )}}
+      fail-fast: false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: ${{ matrix.target }}.zip
+          delete-merged: true
+          pattern: ${{ matrix.target }}-*
