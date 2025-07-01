@@ -127,6 +127,9 @@ jobs:
           echo ARTIFACT_PATH=$ARTIFACT_PATH >> $GITHUB_ENV
           echo $ARTIFACT_PATH
           ls -la $ARTIFACT_PATH/${{ matrix.target.platform }}
+          if [[ "${{ matrix.target.platform }}" == "linux" ]]; then
+            file $ARTIFACT_PATH/${{ matrix.target.platform }}/game${{ matrix.target.arch }}.so
+          fi
 
       - name: Store builds
         uses: actions/upload-artifact@v4
