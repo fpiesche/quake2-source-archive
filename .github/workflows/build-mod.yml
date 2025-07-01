@@ -41,6 +41,9 @@ jobs:
           - runner: ubuntu-24.04-arm
             platform: linux
             arch: aarch64
+          - runner: ubuntu-24.04-arm
+            platform: linux
+            arch: armhf
           - runner: windows-latest
             platform: windows
             arch: x86
@@ -83,8 +86,12 @@ jobs:
             export CMAKE_GENERATOR="Ninja" >> $GITHUB_ENV
           fi
       - name: Install 32bit cross-compilation libs
-        if: matrix.target.arch == 'x86' && matrix.target.platform == 'linux'
-        run: sudo apt-get update && sudo apt-get install -y libc6-dev-i386-cross libgcc-s1-i386-cross
+        if: (matrix.target.arch == 'x86' || matrix.target.arch == 'armhf') && matrix.target.platform == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libc6-dev-armhf-cross libgcc-s1-armhf-cross \
+            libc6-dev-i386-cross libgcc-s1-i386-cross
       - name: Build ${{ inputs.target_name }} ${{ matrix.target.platform }} ${{ matrix.target.arch }}
         id: build
         if: matrix.target.arch != 'wasm'

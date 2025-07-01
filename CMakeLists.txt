@@ -45,11 +45,15 @@ foreach(item ${MODS})
         file(MAKE_DIRECTORY bin/${mod}/${OS_HANDLE})
 
         # Handle 32bit builds
-        if (Q2_BUILD_ARCH STREQUAL "x86")
-          if(LINUX)
+        if(LINUX)
+          if (Q2_BUILD_ARCH STREQUAL "x86")
             set_target_properties(${mod} PROPERTIES COMPILE_OPTIONS "-m32" LINK_FLAGS "-m32")
             target_link_directories(${mod} BEFORE PUBLIC /usr/i686-linux-gnu/lib)
             target_include_directories(${mod} SYSTEM BEFORE PUBLIC /usr/i686-linux-gnu/include)
+          elseif (Q2_BUILD_ARCH STREQUAL "armhf")
+            set_target_properties(${mod} PROPERTIES COMPILE_OPTIONS "-m32" LINK_FLAGS "-m32")
+            target_link_directories(${mod} BEFORE PUBLIC /usr/arm-linux-gnueabihf/lib)
+            target_include_directories(${mod} SYSTEM BEFORE PUBLIC /usr/arm-linux-gnueabihf/include)
           endif()
         endif()
 
