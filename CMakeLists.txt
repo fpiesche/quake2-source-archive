@@ -5,6 +5,7 @@ option(Q2_BUILD_ARCH "Target architecture to build (default: host architecture)"
 if (Q2_BUILD_ARCH STREQUAL "x86")
   set(CMAKE_C_FLAGS -m32)
   set(CMAKE_CXX_FLAGS -m32)
+  include_directories(/usr/i686-linux-gnu/include/)
 endif()
 
 string(TOLOWER ${CMAKE_SYSTEM_NAME} OS_HANDLE)
