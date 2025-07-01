@@ -52,7 +52,7 @@ jobs:
           echo $MATRIX | jq
           echo "::endgroup::"
           echo "::group::Mods"
-          export MODS=$(echo $MATRIX | jq '.[].name' | uniq | jq -n '[ inputs ]')
+          export MODS=$(echo $MATRIX | jq '.[].name' | uniq | jq -n '[ { "name": inputs } ]')
           echo "MODS=$MODS" >> $GITHUB_OUTPUT
           echo $MODS | jq
           echo "::endgroup::"
@@ -62,7 +62,7 @@ jobs:
     needs: builds
     strategy:
       matrix:
-        target: ${{fromJson(needs.builds.outputs.matrix)}}
+        target: ${{ fromJson(needs.builds.outputs.matrix) }}
       fail-fast: false
     runs-on: ${{ matrix.target.runner }}
     steps:
@@ -108,17 +108,17 @@ jobs:
           path: build/bin/${{ matrix.target.name }}
 
   merge-artifacts:
-    name: Merge artifacts for ${{ matrix.target }}
+    name: Merge artifacts for ${{ matrix.target.name }}
     needs: build-mod
     strategy:
       matrix:
-        target: ${{ fromJson(needs.builds.outputs.mods )}}
+        target: ${{ fromJson(needs.builds.outputs.mods) }}
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
       - name: Merge artifacts
         uses: actions/upload-artifact/merge@v4
         with:
-          name: ${{ matrix.target }}.zip
+          name: ${{ matrix.target.name }}.zip
           delete-merged: true
-          pattern: ${{ matrix.target }}-*
+          pattern: ${{ matrix.target.name }}-*
