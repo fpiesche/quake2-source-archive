@@ -49,7 +49,7 @@ foreach(item ${MODS})
           if(LINUX)
             set(CMAKE_FIND_ROOT_PATH /usr/i686-linux-gnu)
             set_target_properties(${mod} PROPERTIES COMPILE_OPTIONS "-m32" LINK_FLAGS "-m32")
-            target_include_directories(${mod} BEFORE SYSTEM /usr/i686-linux-gnu/include)
+            target_include_directories(${mod} SYSTEM BEFORE PUBLIC /usr/i686-linux-gnu/include)
           endif()
         endif()
 
