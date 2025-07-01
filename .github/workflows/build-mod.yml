@@ -70,6 +70,9 @@ jobs:
           mv ../bin/${{ inputs.target_name }}/game.wasm ../build/bin/${{ inputs.target_name }}/
 
       # Native build
+      - name: Install 32bit cross-compilation libs
+        if: matrix.target.arch == 'x86' && matrix.target.platform == 'linux'
+        run: apt update && sudo apt install -y libc6-dev-i386-cross
       - name: Build ${{ inputs.target_name }} ${{ matrix.target.platform }} ${{ matrix.target.arch }}
         if: matrix.target.arch != 'wasm'
         uses: threeal/cmake-action@v2.1.0
