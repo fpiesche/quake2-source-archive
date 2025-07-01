@@ -19,6 +19,7 @@ env:
 
 jobs:
   build:
+    name: ${{ inputs.target_name }} ${{ matrix.platform }} ${{ matrix.arch }}
     strategy:
       fail-fast: false
       matrix:
