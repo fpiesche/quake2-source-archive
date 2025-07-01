@@ -8,13 +8,6 @@ option(Q2_BUILD_ARCH "Target architecture to build (default: host architecture)"
 # Add cmake module path for special-case modules for certain mods
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-
-# Remove unnecessary workspace files for 007q2 which break all Windows builds
-if (WIN32)
-  file(REMOVE_RECURSE sources/007q2)
-endif()
-
-
 # Loop over all subdirectories in `sources` and add each one as a mod target to build
 file(GLOB MODS LIST_DIRECTORIES true "sources/*")
 foreach(item ${MODS})
