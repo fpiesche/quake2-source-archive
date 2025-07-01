@@ -68,11 +68,9 @@ jobs:
       - name: Build ${{ inputs.target_name }} wasm
         if: matrix.target.arch == 'wasm'
         run: |
-          mkdir -p build/bin/${{ inputs.target_name }}/wasm && \
           export PATH=$PATH:/opt/wasi-sdk/bin/ && \
           cd wasm && \
           python3 compile_mod.py ${{ inputs.target_name }} && \
-          mv ../bin/${{ inputs.target_name }}/game.wasm ../build/bin/${{ inputs.target_name }}/wasm/
 
       # Native build
       - name: Set cmake generator
@@ -109,10 +107,15 @@ jobs:
           else
             export ARTIFACT_PATH=${{ steps.build.outputs.build-dir }}/bin/${{ inputs.target_name }}
           fi
+
+          mkdir -p $ARTIFACT_PATH/${{ matrix.target.platform }}
+
           if [[ "${{ matrix.target.platform }}" == "windows" ]]; then
-            mkdir -p $ARTIFACT_PATH
             mv build/Debug $ARTIFACT_PATH/${{ matrix.target.platform }}
+          elif [[ "${{ matrix.target.platform }}" == "wasm" ]]; then
+            find . -type f -name "game.wasm" | xargs cp -vt $ARTIFACT_PATH/${{ matrix.target.platform }}/
           fi
+
           echo ARTIFACT_PATH=$ARTIFACT_PATH >> $GITHUB_ENV
           echo $ARTIFACT_PATH
           ls -la $ARTIFACT_PATH/${{ matrix.target.platform }}
