@@ -16,6 +16,7 @@ jobs:
   build:
     strategy:
       matrix:
+        fail-fast: false
         target:
           - runner: ubuntu-latest
             platform: wasm
