@@ -10,13 +10,9 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 
 # Remove unnecessary workspace files for 007q2 which break all Windows builds
-file(REMOVE
-  source/007q2/game.dsp
-  source/007q2/GAME.DSW
-  source/007q2/GAME.opt
-  source/007q2/GAME.PLG
-  source/007q2/GAME.positions
-)
+if (WINDOWS)
+  file(REMOVE_RECURSE source/007q2)
+endif()
 
 
 # Loop over all subdirectories in `sources` and add each one as a mod target to build
@@ -64,7 +60,6 @@ foreach(item ${MODS})
 
       endif()
     endif()
-
   endif()
 endforeach()
 
