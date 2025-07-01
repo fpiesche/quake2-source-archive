@@ -52,14 +52,15 @@ foreach(item ${MODS})
           endif()
         endif()
 
-        set_target_properties(${mod} PROPERTIES
-          PREFIX ""
-          OUTPUT_NAME "game${Q2_BUILD_ARCH}"
-          LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${mod}/${OS_HANDLE}/"
-        )
-
       endif()
     endif()
+
+    set_target_properties(${mod} PROPERTIES
+      PREFIX ""
+      OUTPUT_NAME "game${Q2_BUILD_ARCH}"
+      LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${mod}/${OS_HANDLE}/"
+    )
+
   endif()
 endforeach()
 
