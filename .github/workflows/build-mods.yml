@@ -48,13 +48,12 @@ jobs:
 
   build-mod: 
       needs: builds
-      # strategy:
-      #   matrix:
-      #     target: ${{ fromJson(needs.builds.outputs.mods) }}
+      strategy:
+        matrix:
+          target: ${{ fromJson(needs.builds.outputs.mods) }}
       uses: ./.github/workflows/build-mod.yml
       with:
-        # target_name: ${{ matrix.target }}
-        target_name: ctc
+        target_name: ${{ matrix.target }}
 
   merge-artifacts:
     name: Merge artifacts for ${{ matrix.target }}
