@@ -108,11 +108,9 @@ jobs:
           path: build/bin/${{ matrix.target.name }}
 
   merge-artifacts:
-    if: always()
+    if: ${{ always() }}
     name: Merge artifacts for ${{ matrix.target.name }}
-    needs: 
-      - builds
-      - build-mod
+    needs: [builds, build-mod]
     strategy:
       matrix:
         target: ${{ fromJson(needs.builds.outputs.mods) }}
