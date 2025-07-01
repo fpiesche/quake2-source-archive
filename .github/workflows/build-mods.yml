@@ -69,7 +69,7 @@ jobs:
 
       # Native build
       - name: Build ${{ matrix.target.name }} ${{ matrix.target.platform_name }}
-        if: matrix.target.platform_name != "wasm"
+        if: matrix.target.platform_name != 'wasm'
         uses: threeal/cmake-action@v2.1.0
         with:
           generator: Ninja
@@ -80,7 +80,7 @@ jobs:
 
       # WASM build
       - name: Install WASI SDK
-        if: matrix.target.platform_name == "wasm"
+        if: matrix.target.platform_name == 'wasm'
         run: |
           curl -LO ${{ env.WASI_SDK_URL }} && \
           dpkg -i wasi-sdk-*-x86_64-linux.deb && \
@@ -89,7 +89,7 @@ jobs:
             --output /opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi/libclang_rt.builtins-wasm32.a && \
           ln -s /opt/wasi-sdk/share/wasi-sysroot wasm/wasi-sysroot
       - name: Build ${{ matrix.target.name }} wasm
-        if: matrix.target.platform_name == "wasm"
+        if: matrix.target.platform_name == 'wasm'
         run: |
           export PATH=$PATH:/opt/wasi-sdk/bin/ && \
           cd wasm && \
