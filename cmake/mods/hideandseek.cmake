@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.10)
 set(MOD_NAME "hideandseek")
 project(${MOD_NAME} CXX)
 
