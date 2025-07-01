@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
 project(q2mods)
 
+# Variables used to control destination filenames and 32bit builds
+string(TOLOWER ${CMAKE_SYSTEM_NAME} OS_HANDLE)
 option(Q2_BUILD_ARCH "Target architecture to build (default: host architecture)" ${CMAKE_SYSTEM_PROCESSOR})
 
-string(TOLOWER ${CMAKE_SYSTEM_NAME} OS_HANDLE)
-
+# Add cmake module path for special-case modules for certain mods
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+# Loop over all subdirectories in `sources` and add each one as a mod target to build
 file(GLOB MODS LIST_DIRECTORIES true "sources/*")
 foreach(item ${MODS})
 	if(IS_DIRECTORY ${item})
