@@ -31,7 +31,7 @@ def get_mod_name(item: str) -> str:
         return item_path.name
     else:
         if not item_path.is_relative_to("sources"):
-            return None
+            return ""
         else:
             mod_name = item_path.parents[-3].stem
             if mod_name in valid_mod_names:
