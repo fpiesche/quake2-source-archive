@@ -98,7 +98,7 @@ jobs:
           build-args: --target ${{ inputs.target_name }}
           options: |
             Q2_BUILD_ARCH=${{ matrix.target.arch }}
-            CMAKE_BUILD_TYPE=RelWithDbgInfo
+            CMAKE_BUILD_TYPE=RelWithDebInfo
 
       - name: Find build output path
         shell: bash
@@ -108,8 +108,13 @@ jobs:
           else
             export ARTIFACT_PATH=${{ steps.build.outputs.build-dir }}/bin/${{ inputs.target_name }}
           fi
+          if [[ "${{ github.runner_os }}" == "Windows" ]]; then
+            mkdir -p $ARTIFACT_PATH
+            mv build/*/* $ARTIFACT_PATH/
+          fi
           echo ARTIFACT_PATH=$ARTIFACT_PATH >> $GITHUB_ENV
           echo $ARTIFACT_PATH
+          ls -la $ARTIFACT_PATH
 
       - name: Store builds
         uses: actions/upload-artifact@v4
