@@ -69,6 +69,6 @@ jobs:
       - name: Merge artifacts
         uses: actions/upload-artifact/merge@v4
         with:
-          name: ${{ matrix.target.name }}.zip
-          pattern: ${{ matrix.target.name }}-*
+          name: ${{ matrix.target }}.zip
+          pattern: ${{ matrix.target }}-*
           delete-merged: true
