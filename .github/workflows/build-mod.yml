@@ -68,7 +68,7 @@ jobs:
       - name: Build ${{ inputs.target_name }} wasm
         if: matrix.target.arch == 'wasm'
         run: |
-          mkdir -p build/bin/${{ inputs.target_name }}/wasm && \
+          mkdir -p ../build/bin/${{ inputs.target_name }}/wasm && \
           export PATH=$PATH:/opt/wasi-sdk/bin/ && \
           cd wasm && \
           python3 compile_mod.py ${{ inputs.target_name }} && \
@@ -76,6 +76,7 @@ jobs:
 
       # Native build
       - name: Set cmake generator
+        if: matrix.target.arch != 'wasm'
         shell: bash
         run: |
           if [[ ${{ runner.os }} == "Windows" ]]; then
