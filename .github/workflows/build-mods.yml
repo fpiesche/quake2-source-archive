@@ -54,7 +54,7 @@ jobs:
           echo "::endgroup::"
 
   build-mod:
-      uses: ${{ github.repository_owner }}/${{ github.repository }}/.github/workflows/build-mod.yml@main
+      uses: .github/workflows/build-mod.yml
       with:
         name: ${{ matrix.target.name }}
         runner: ${{ matrix.target.runner }}
