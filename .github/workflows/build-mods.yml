@@ -88,9 +88,9 @@ jobs:
         if: matrix.target.platform_name == 'wasm'
         run: |
           curl -LO ${{ env.WASI_SDK_URL }} && \
-          dpkg -i wasi-sdk-*-x86_64-linux.deb && \
+          sudo dpkg -i wasi-sdk-*-x86_64-linux.deb && \
           rm *.deb && \
-          curl -L ${{ env.LIBCLANG_RT_BUILTINS_WASM32_A_URL }} \
+          sudo curl -L ${{ env.LIBCLANG_RT_BUILTINS_WASM32_A_URL }} \
             --output /opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi/libclang_rt.builtins-wasm32.a && \
           ln -s /opt/wasi-sdk/share/wasi-sysroot wasm/wasi-sysroot
       - name: Build ${{ matrix.target.name }} wasm
