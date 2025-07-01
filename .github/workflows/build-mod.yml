@@ -99,6 +99,8 @@ jobs:
           options: |
             Q2_BUILD_ARCH=${{ matrix.target.arch }}
 
+      - run: find ${{ steps.build.outputs.build-dir }} -name game${{ matrix.target.arch }}.*
+
       - name: Store builds
         uses: actions/upload-artifact@v4
         with:
