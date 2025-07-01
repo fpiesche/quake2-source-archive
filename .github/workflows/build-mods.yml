@@ -51,10 +51,9 @@ jobs:
       strategy:
         matrix:
           target: ${{ fromJson(needs.builds.outputs.mods) }}
-      jobs:
-        uses: ./.github/workflows/build-mod.yml
-        with:
-          target_name: ${{ matrix.target }}
+      uses: ./.github/workflows/build-mod.yml
+      with:
+        target_name: ${{ matrix.target }}
 
   merge-artifacts:
     name: Merge artifacts for ${{ matrix.target }}
