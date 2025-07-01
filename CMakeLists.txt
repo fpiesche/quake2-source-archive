@@ -10,7 +10,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 
 # Remove unnecessary workspace files for 007q2 which break all Windows builds
-if (WINDOWS)
+if (WIN32)
   file(REMOVE_RECURSE source/007q2)
 endif()
 
