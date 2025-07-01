@@ -5,9 +5,9 @@ import re
 
 build_platforms = [
     {"runner": "ubuntu-latest", "arch": "x86_64", "platform_name": "wasm"},
-    {"runner": "windows-latest", "arch": "i386", "platform_name": "Windows x86"},
+    # {"runner": "windows-latest", "arch": "i386", "platform_name": "Windows x86"},
     {"runner": "windows-latest", "arch": "x86_64", "platform_name": "Windows x86_64"},
-    {"runner": "ubuntu-latest", "arch": "i386", "platform_name": "Linux x86"},
+    # {"runner": "ubuntu-latest", "arch": "i386", "platform_name": "Linux x86"},
     {"runner": "ubuntu-latest", "arch": "x86_64", "platform_name": "Linux x86_64"},
     {"runner": "ubuntu-24.04-arm", "arch": "aarch64", "platform_name": "Linux aarch64"},
     {"runner": "macos-13", "arch": "x86_64", "platform_name": "macOS x86_64"},
