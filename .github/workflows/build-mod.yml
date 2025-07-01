@@ -84,7 +84,7 @@ jobs:
           fi
       - name: Install 32bit cross-compilation libs
         if: matrix.target.arch == 'x86' && matrix.target.platform == 'linux'
-        run: sudo apt-get update && sudo apt-get install -y libc6-dev-i386-cross
+        run: sudo apt-get update && sudo apt-get install -y libc6-dev-i386-cross libgcc-s1-i386-cross
       - name: Build ${{ inputs.target_name }} ${{ matrix.target.platform }} ${{ matrix.target.arch }}
         id: build
         if: matrix.target.arch != 'wasm'
