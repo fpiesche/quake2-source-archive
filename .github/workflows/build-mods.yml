@@ -54,19 +54,10 @@ jobs:
           echo "::endgroup::"
 
   build-mod:
-    name: ${{ matrix.target.name }}
-    needs: builds
-    strategy:
-      matrix:
-        target: ${{ fromJson(needs.builds.outputs.matrix) }}
-      fail-fast: false
-    runs-on: ubuntu-latest
-    steps:
-      - name: Build ${{ matrix.target.name }}
-        uses: ${{ github.repository_owner }}/${{ github.repository }}/.github/workflows/build-mod.yml@main
-        with:
-          name: ${{ matrix.target.name }}
-          runner: ${{ matrix.target.runner }}
+      uses: ${{ github.repository_owner }}/${{ github.repository }}/.github/workflows/build-mod.yml@main
+      with:
+        name: ${{ matrix.target.name }}
+        runner: ${{ matrix.target.runner }}
 
   merge-artifacts:
     name: Merge artifacts for ${{ matrix.target.name }}
