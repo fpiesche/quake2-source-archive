@@ -1,5 +1,5 @@
 ---
-name: Build ${{ inputs.target_name }}
+name: Build
 
 on:
   workflow_call:
