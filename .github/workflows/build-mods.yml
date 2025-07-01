@@ -49,6 +49,7 @@ jobs:
   build-mod: 
       needs: builds
       strategy:
+        fail-fast: false
         matrix:
           target: ${{ fromJson(needs.builds.outputs.mods) }}
       uses: ./.github/workflows/build-mod.yml
