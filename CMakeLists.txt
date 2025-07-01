@@ -36,18 +36,18 @@ foreach(item ${MODS})
         add_library(${mod} SHARED ${MOD_SRC})
         set_target_properties(${mod} PROPERTIES PREFIX "")
         set_target_properties(${mod} PROPERTIES OUTPUT_NAME "bin/${mod}/${OS_HANDLE}/game${Q2_BUILD_ARCH}")
+
+        # Handle 32bit builds
+        if (Q2_BUILD_ARCH STREQUAL "x86")
+          if(LINUX)
+            set(CMAKE_FIND_ROOT_PATH /usr/i686-linux-gnu)
+            set_target_properties(${mod} PROPERTIES COMPILE_OPTIONS "-m32" LINK_FLAGS "-m32")
+          endif()
+        endif()
+
       endif()
     endif()
 
   endif()
 endforeach()
 
-# Handle 32bit builds
-if (Q2_BUILD_ARCH STREQUAL "x86")
-  if(LINUX)
-    set(CMAKE_C_FLAGS -m32)
-    set(CMAKE_CXX_FLAGS -m32)
-    include_directories(/usr/i686-linux-gnu/include/)
-    link_directories(/usr/i686-linux-gnu)
-  endif()
-endif()
