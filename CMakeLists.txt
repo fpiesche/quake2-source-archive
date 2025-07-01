@@ -60,6 +60,7 @@ foreach(item ${MODS})
         PREFIX ""
         OUTPUT_NAME "game${Q2_BUILD_ARCH}"
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${mod}/${OS_HANDLE}/"
+        CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${mod}/${OS_HANDLE}/"
       )
     endif()
 
