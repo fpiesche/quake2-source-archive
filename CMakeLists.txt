@@ -42,6 +42,7 @@ foreach(item ${MODS})
         add_library(${mod} SHARED ${MOD_SRC})
         set_target_properties(${mod} PROPERTIES PREFIX "")
         set_target_properties(${mod} PROPERTIES OUTPUT_NAME "bin/${mod}/${OS_HANDLE}/game${Q2_BUILD_ARCH}")
+        file(MAKE_DIRECTORY bin/${mod}/${OS_HANDLE})
 
         # Handle 32bit builds
         if (Q2_BUILD_ARCH STREQUAL "x86")
@@ -50,6 +51,12 @@ foreach(item ${MODS})
             set_target_properties(${mod} PROPERTIES COMPILE_OPTIONS "-m32" LINK_FLAGS "-m32")
           endif()
         endif()
+
+        set_target_properties(${mod} PROPERTIES
+          PREFIX ""
+          OUTPUT_NAME "game${Q2_BUILD_ARCH}"
+          LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${mod}/${OS_HANDLE}/"
+        )
 
       endif()
     endif()

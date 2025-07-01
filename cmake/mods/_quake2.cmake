@@ -8,5 +8,3 @@ file(GLOB MOD_SRC
 )
 
 add_library(${MOD_NAME} SHARED ${MOD_SRC})
-set_target_properties(${MOD_NAME} PROPERTIES PREFIX "")
-set_target_properties(${MOD_NAME} PROPERTIES OUTPUT_NAME "bin/${MOD_NAME}/${OS_HANDLE}/game${Q2_BUILD_ARCH}")
