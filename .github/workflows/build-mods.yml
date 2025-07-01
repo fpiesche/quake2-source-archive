@@ -87,3 +87,5 @@ jobs:
           generate_release_notes: true
           make_latest: true
           append_body: true
+          target_commitish: ${{ github.sha }}
+          tag_name: ${{ github.sha_short }}
