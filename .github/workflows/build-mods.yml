@@ -110,7 +110,9 @@ jobs:
   merge-artifacts:
     if: always()
     name: Merge artifacts for ${{ matrix.target.name }}
-    needs: build-mod
+    needs: 
+      - builds
+      - build-mod
     strategy:
       matrix:
         target: ${{ fromJson(needs.builds.outputs.mods) }}
