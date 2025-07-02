@@ -91,8 +91,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            libc6-dev-armhf-cross libgcc-s1-armhf-cross \
-            libc6-dev-i386-cross libgcc-s1-i386-cross
+            libc6-dev-armhf-cross libgcc-s1-armhf-cross libgcc-13-dev-armhf-cross \
+            libc6-dev-i386-cross libgcc-s1-i386-cross libgcc-13-dev-i386-cross
       - name: Build ${{ inputs.target_name }} ${{ matrix.target.platform }} ${{ matrix.target.arch }}
         id: build
         if: matrix.target.arch != 'wasm'

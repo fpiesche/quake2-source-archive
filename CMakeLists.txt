@@ -49,12 +49,18 @@ foreach(item ${MODS})
           if (Q2_BUILD_ARCH STREQUAL "x86")
             target_include_directories(${mod} SYSTEM BEFORE PUBLIC /usr/i686-linux-gnu/include)
             target_compile_options(${mod} PUBLIC -m32)
-            target_link_directories(${mod} BEFORE PUBLIC /usr/i686-linux-gnu)
+            target_link_directories(${mod} BEFORE PUBLIC
+              /usr/i686-linux-gnu/lib
+              /usr/lib/gcc-cross/i686-linux-gnu/13
+            )
             target_link_options(${mod} PUBLIC -m32 --verbose)
           elseif (Q2_BUILD_ARCH STREQUAL "armhf")
             target_include_directories(${mod} SYSTEM BEFORE PUBLIC /usr/arm-linux-gnueabihf/include)
             target_compile_options(${mod} PUBLIC -m32 -mfloat-abi=hard -target arm-linux-gnueabihf)
-            target_link_directories(${mod} BEFORE PUBLIC /usr/arm-linux-gnueabihf/lib)
+            target_link_directories(${mod} BEFORE PUBLIC
+              /usr/arm-linux-gnueabihf/lib
+              /usr/lib/gcc-cross/arm-linux-gnueabihf/13
+              )
             target_link_options(${mod} PUBLIC -m32 --verbose)
           endif()
         endif()
