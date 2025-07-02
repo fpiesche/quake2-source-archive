@@ -80,14 +80,14 @@ jobs:
           export github_sha_short="${github_sha_hash:0:7}"
           echo "COMMIT_SHORT=$github_sha_short" >> $GITHUB_ENV
           cd build
-          tar cvzf ${{ matrix.target }}-${github_sha_short}.tar.gzip *
+          tar cvzf ${{ matrix.target }}-${github_sha_short}.tar.gz *
       - name: Create release
         if: success()
         uses: ncipollo/release-action@bcfe5470707e8832e12347755757cec0eb3c22af
         with:
           allowUpdates: true
           artifactErrorsFailBuild: true
-          artifacts: build/${{ matrix.target }}-${{ env.COMMIT_SHORT }}.zip
+          artifacts: build/${{ matrix.target }}-${{ env.COMMIT_SHORT }}.tar.gz
           commit: ${{ github.sha }}
           tag: ${{ env.COMMIT_SHORT }}
           name: ${{ matrix.target }} ${{ env.COMMIT_SHORT }}
