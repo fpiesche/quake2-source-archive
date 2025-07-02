@@ -58,7 +58,7 @@ jobs:
         target_name: ${{ matrix.target }}
 
   assemble-release:
-    name: Build release for ${{ matrix.target }}
+    name: Assemble release for ${{ matrix.target }}
     if: always()
     needs: [builds, build-mod]
     strategy:
@@ -75,14 +75,14 @@ jobs:
       - name: Merge artifacts
         uses: actions/upload-artifact/merge@v4
         with:
-          name: ${{ matrix.target }}-${{ env.COMMIT_SHORT }}.zip
+          name: ${{ matrix.target }}-${{ env.COMMIT_SHORT }}
           pattern: ${{ matrix.target }}-*
           delete-merged: true
       - name: Create release
         if: success()
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ matrix.target }}-${{ env.COMMIT_SHORT }}.zip
+          files: ${{ matrix.target }}-${{ env.COMMIT_SHORT }}
           name: ${{ matrix.target }} ${{ env.COMMIT_SHORT }}
           fail_on_unmatched_files: true
           generate_release_notes: true
