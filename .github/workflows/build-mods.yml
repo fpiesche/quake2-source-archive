@@ -67,28 +67,27 @@ jobs:
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
-      - name: Get short git sha
+      - name: Download artifacts for ${{ matrix.target }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ matrix.target }}-*
+          merge-multiple: true
+          path: build
+      - name: Create merged artifact
+        shell: bash
         run: |
           export github_sha_hash=${{ github.sha }}
           export github_sha_short="${github_sha_hash:0:7}"
           echo "COMMIT_SHORT=$github_sha_short" >> $GITHUB_ENV
-      - name: Merge artifacts
-        uses: actions/upload-artifact/merge@v4
-        with:
-          name: ${{ matrix.target }}-${{ env.COMMIT_SHORT }}.zip
-          pattern: ${{ matrix.target }}-*
-          delete-merged: true
-      - name: Grab merged artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ matrix.target }}-${{ env.COMMIT_SHORT }}.zip
+          cd build
+          tar cvzf ${{ matrix.target }}-${github_sha_short}.tar.gzip *
       - name: Create release
         if: success()
         uses: ncipollo/release-action@bcfe5470707e8832e12347755757cec0eb3c22af
         with:
           allowUpdates: true
           artifactErrorsFailBuild: true
-          artifacts: ${{ matrix.target }}-${{ env.COMMIT_SHORT }}.zip
+          artifacts: build/${{ matrix.target }}-${{ env.COMMIT_SHORT }}.zip
           commit: ${{ github.sha }}
           tag: ${{ env.COMMIT_SHORT }}
           name: ${{ matrix.target }} ${{ env.COMMIT_SHORT }}
