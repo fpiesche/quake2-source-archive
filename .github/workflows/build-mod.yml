@@ -1,5 +1,5 @@
 ---
-name: Build individual mod
+name: Build mod
 
 on:
   workflow_call:

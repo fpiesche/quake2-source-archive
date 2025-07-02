@@ -53,7 +53,7 @@ foreach(item ${MODS})
               /usr/i686-linux-gnu/lib
               /usr/lib/gcc-cross/i686-linux-gnu/13
             )
-            target_link_options(${mod} PUBLIC -m32 --verbose)
+            target_link_options(${mod} PUBLIC -m32)
           elseif (Q2_BUILD_ARCH STREQUAL "armhf")
             target_include_directories(${mod} SYSTEM BEFORE PUBLIC /usr/arm-linux-gnueabihf/include)
             target_compile_options(${mod} PUBLIC -m32 -mfloat-abi=hard -target arm-linux-gnueabihf)
@@ -61,7 +61,7 @@ foreach(item ${MODS})
               /usr/arm-linux-gnueabihf/lib
               /usr/lib/gcc-cross/arm-linux-gnueabihf/13
               )
-            target_link_options(${mod} PUBLIC -m32 --verbose)
+            target_link_options(${mod} PUBLIC -m32)
           endif()
         endif()
 

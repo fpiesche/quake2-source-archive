@@ -46,7 +46,8 @@ jobs:
           echo $MODLIST | jq
           echo "::endgroup::"
 
-  build-mod: 
+  build-mod:
+      name: ${{ matrix.target }} 
       needs: builds
       strategy:
         fail-fast: false
