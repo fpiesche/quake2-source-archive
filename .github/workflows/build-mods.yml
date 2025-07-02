@@ -6,7 +6,7 @@ on:
     inputs:
       mods:
         type: string
-        description: mod names to build
+        description: mod names to build (empty for all)
   push:
     paths:
       - "sources/*"
@@ -16,7 +16,7 @@ on:
 
 jobs:
   builds:
-    name: Get mods to build
+    name: Collect targets
     runs-on: ubuntu-latest
     outputs:
       mods: ${{ steps.builds.outputs.modlist }}
@@ -57,8 +57,8 @@ jobs:
       with:
         target_name: ${{ matrix.target }}
 
-  merge-artifacts:
-    name: Merge artifacts for ${{ matrix.target }}
+  assemble-release:
+    name: Build release for ${{ matrix.target }}
     if: always()
     needs: [builds, build-mod]
     strategy:
@@ -89,4 +89,4 @@ jobs:
           make_latest: true
           append_body: true
           target_commitish: ${{ github.sha }}
-          tag_name: ${{ github.sha_short }}
+          tag_name: ${{ env.COMMIT_SHORT }}
