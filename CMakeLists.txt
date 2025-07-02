@@ -47,6 +47,7 @@ foreach(item ${MODS})
         # Handle 32bit builds
         if(LINUX)
           if (Q2_BUILD_ARCH STREQUAL "x86")
+            message(WARNING "Setting up i686 build")
             target_include_directories(${mod} SYSTEM BEFORE PUBLIC /usr/i686-linux-gnu/include)
             target_compile_options(${mod} PUBLIC -m32)
             target_link_directories(${mod} BEFORE PUBLIC
@@ -55,12 +56,13 @@ foreach(item ${MODS})
             )
             target_link_options(${mod} PUBLIC -m32)
           elseif (Q2_BUILD_ARCH STREQUAL "armhf")
+            message(WARNING "Setting up armhf build")
             target_include_directories(${mod} SYSTEM BEFORE PUBLIC /usr/arm-linux-gnueabihf/include)
             target_compile_options(${mod} PUBLIC -m32 -mfloat-abi=hard -target arm-linux-gnueabihf)
             target_link_directories(${mod} BEFORE PUBLIC
               /usr/arm-linux-gnueabihf/lib
               /usr/lib/gcc-cross/arm-linux-gnueabihf/13
-              )
+            )
             target_link_options(${mod} PUBLIC -m32)
           endif()
         endif()
