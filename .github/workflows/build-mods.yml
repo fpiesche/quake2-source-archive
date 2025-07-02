@@ -71,7 +71,7 @@ jobs:
         run: |
           export github_sha_hash=${{ github.sha }}
           export github_sha_short="${github_sha_hash:0:7}"
-          echo "COMMIT_SHORT=$github_sha_short}" >> $GITHUB_ENV
+          echo "COMMIT_SHORT=$github_sha_short" >> $GITHUB_ENV
       - name: Merge artifacts
         uses: actions/upload-artifact/merge@v4
         with:
