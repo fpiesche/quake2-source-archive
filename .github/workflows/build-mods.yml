@@ -78,6 +78,10 @@ jobs:
           name: ${{ matrix.target }}-${{ env.COMMIT_SHORT }}.zip
           pattern: ${{ matrix.target }}-*
           delete-merged: true
+      - name: Grab merged artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.target }}-${{ env.COMMIT_SHORT }}.zip
       - name: Create release
         if: success()
         uses: ncipollo/release-action@bcfe5470707e8832e12347755757cec0eb3c22af
@@ -92,4 +96,3 @@ jobs:
           removeArtifacts: true
           replacesArtifacts: true
           makeLatest: true
-          append_body: true
